@@ -14,7 +14,7 @@ import java.util.Arrays;
 @Aspect
 @Order(1)
 @Component
-@Slf4j
+@Slf4j(topic = "logstashErrorLog")
 public class ExceptionLogAspect {
     /**
      * 范围切点方法
@@ -26,6 +26,7 @@ public class ExceptionLogAspect {
     @AfterThrowing(throwing = "ex", pointcut = "methodPointCut()")
     public void throwss(JoinPoint joinPoint, Exception ex) {
         try {
+            log.info("throws :\n");
             String methodArgs = Arrays.toString(joinPoint.getArgs());
             FileBeatLogUtil.writeExceptionLog(joinPoint.getSignature().toString(), methodArgs, ex.getMessage());
         } catch (Exception e) {

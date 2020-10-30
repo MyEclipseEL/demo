@@ -2,6 +2,7 @@ package com.test.demo.util;
 
 import com.alibaba.fastjson.JSON;
 import com.test.demo.util.wrapper.Wrapper;
+import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -9,12 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import sun.rmi.runtime.Log;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Slf4j
 public class FileBeatLogUtil {
 
     public static void writeRequestInfo(HttpServletRequest request, String applicationName, String reqName, String requestParams) {
@@ -54,7 +57,7 @@ public class FileBeatLogUtil {
         exceptionMessage = String.format("MethodName:%s;Args:%s;Exception:%s", exceptionMethodName, exceptionMethodArgs, exceptionMessage);
         //MDC值为ES键值对JSON信息
         MDC.put("exceptionMessage", exceptionMessage);
-
+        log.error("method: {}, error: {}", "writeExceptionLog", MDC.get("exceptionMessage"));
     }
 
     public static void writeResponseLog(Object o, Logger log, HttpServletResponse response) {
@@ -97,7 +100,7 @@ public class FileBeatLogUtil {
 
         Map<String, String> copyOfContextMap = MDC.getCopyOfContextMap();
         String reqInfoJsonStr = JSON.toJSONString(copyOfContextMap);
-        log.info(reqInfoJsonStr);
+        log.info("method: {} , message: {}","writeResponseLog", reqInfoJsonStr);
     }
 
     /**
